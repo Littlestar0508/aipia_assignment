@@ -20,7 +20,7 @@ function TabButton({ text, target }: TabButtonType) {
           tabState === target
             ? 'font-bold text-blue-600 border-b border-blue-600'
             : 'text-gray-400'
-        } hover:bg-gray-300 p-4 rounded-t-xl`}
+        } hover:bg-gray-300 active:bg-gray-300 p-4 rounded-t-xl`}
       >
         {text}
       </button>
