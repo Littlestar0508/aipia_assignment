@@ -1,3 +1,4 @@
+// 메인페이지 뉴스 카드 스켈레톤UI
 function MainPageSkeleton() {
   return (
     <div className="flex animate-pulse flex-row items-center gap-4">
