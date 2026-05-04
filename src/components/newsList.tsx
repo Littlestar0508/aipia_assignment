@@ -33,8 +33,14 @@ function NewsList() {
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
+  const [error, setError] = useState<Error | null>(null);
+
   const observerRef = useRef<HTMLDivElement | null>(null);
   const isFetchingRef = useRef(false);
+
+  if (error) {
+    throw error;
+  }
 
   useEffect(() => {
     const controller = new AbortController();
@@ -44,18 +50,24 @@ function NewsList() {
       setStoryIds([]);
       setCurrentNewsList([]);
       setPage(0);
+      setError(null);
 
       try {
         const res = await fetch(getNewsListUrl(tabState), {
           signal: controller.signal,
         });
 
+        if (!res.ok) {
+          throw new Error('뉴스 ID 목록 호출 실패');
+        }
+
         const ids: number[] = await res.json();
         setStoryIds(ids);
       } catch (error) {
         if (error instanceof DOMException && error.name === 'AbortError')
           return;
-        console.error('뉴스 ID 목록 호출 실패:', error);
+
+        setError(error instanceof Error ? error : new Error('뉴스 호출 실패'));
       } finally {
         setIsLoading(false);
       }
@@ -93,6 +105,11 @@ function NewsList() {
               `https://hacker-news.firebaseio.com/v0/item/${id}.json`,
               { signal: controller.signal },
             );
+
+            if (!res.ok) {
+              throw new Error('뉴스 상세 호출 실패');
+            }
+
             return res.json();
           }),
         );
@@ -108,7 +125,8 @@ function NewsList() {
       } catch (error) {
         if (error instanceof DOMException && error.name === 'AbortError')
           return;
-        console.error('뉴스 상세 호출 실패:', error);
+
+        setError(error instanceof Error ? error : new Error('뉴스 호출 실패'));
       } finally {
         setIsLoading(false);
         isFetchingRef.current = false;
