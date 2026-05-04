@@ -34,6 +34,7 @@ function NewsList() {
   const [isLoading, setIsLoading] = useState(false);
 
   const observerRef = useRef<HTMLDivElement | null>(null);
+  const isFetchingRef = useRef(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -71,6 +72,8 @@ function NewsList() {
     const controller = new AbortController();
 
     const fetchNewsItems = async () => {
+      if (isFetchingRef.current) return;
+      isFetchingRef.current = true;
       setIsLoading(true);
 
       const start = page * PAGE_SIZE;
@@ -79,6 +82,7 @@ function NewsList() {
 
       if (currentIds.length === 0) {
         setIsLoading(false);
+        isFetchingRef.current = false;
         return;
       }
 
@@ -89,7 +93,6 @@ function NewsList() {
               `https://hacker-news.firebaseio.com/v0/item/${id}.json`,
               { signal: controller.signal },
             );
-
             return res.json();
           }),
         );
@@ -108,6 +111,7 @@ function NewsList() {
         console.error('뉴스 상세 호출 실패:', error);
       } finally {
         setIsLoading(false);
+        isFetchingRef.current = false;
       }
     };
 
@@ -121,19 +125,17 @@ function NewsList() {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !isLoading) {
+        if (entry.isIntersecting && !isFetchingRef.current) {
           setPage((prev) => prev + 1);
         }
       },
-      {
-        threshold: 1,
-      },
+      { threshold: 1 },
     );
 
     observer.observe(observerRef.current);
 
     return () => observer.disconnect();
-  }, [isLoading]);
+  }, []);
 
   return (
     <div className="my-4 flex flex-col gap-4">
@@ -147,14 +149,8 @@ function NewsList() {
         />
       ))}
 
-      {isLoading && (
-        <>
-          <MainPageSkeleton />
-          <MainPageSkeleton />
-          <MainPageSkeleton />
-          <MainPageSkeleton />
-        </>
-      )}
+      {isLoading &&
+        Array.from({ length: 4 }).map((_, i) => <MainPageSkeleton key={i} />)}
 
       <div ref={observerRef} className="h-10" />
     </div>
