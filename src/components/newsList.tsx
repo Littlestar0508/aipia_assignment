@@ -36,17 +36,24 @@ function NewsList() {
   const observerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchStoryIds = async () => {
       setIsLoading(true);
+      setStoryIds([]);
       setCurrentNewsList([]);
       setPage(0);
 
       try {
-        const res = await fetch(getNewsListUrl(tabState));
-        const ids: number[] = await res.json();
+        const res = await fetch(getNewsListUrl(tabState), {
+          signal: controller.signal,
+        });
 
+        const ids: number[] = await res.json();
         setStoryIds(ids);
       } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError')
+          return;
         console.error('뉴스 ID 목록 호출 실패:', error);
       } finally {
         setIsLoading(false);
@@ -54,10 +61,14 @@ function NewsList() {
     };
 
     fetchStoryIds();
+
+    return () => controller.abort();
   }, [tabState]);
 
   useEffect(() => {
     if (storyIds.length === 0) return;
+
+    const controller = new AbortController();
 
     const fetchNewsItems = async () => {
       setIsLoading(true);
@@ -66,11 +77,17 @@ function NewsList() {
       const end = start + PAGE_SIZE;
       const currentIds = storyIds.slice(start, end);
 
+      if (currentIds.length === 0) {
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const newsItems = await Promise.all(
           currentIds.map(async (id) => {
             const res = await fetch(
               `https://hacker-news.firebaseio.com/v0/item/${id}.json`,
+              { signal: controller.signal },
             );
 
             return res.json();
@@ -86,6 +103,8 @@ function NewsList() {
           );
         });
       } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError')
+          return;
         console.error('뉴스 상세 호출 실패:', error);
       } finally {
         setIsLoading(false);
@@ -93,6 +112,8 @@ function NewsList() {
     };
 
     fetchNewsItems();
+
+    return () => controller.abort();
   }, [storyIds, page]);
 
   useEffect(() => {
