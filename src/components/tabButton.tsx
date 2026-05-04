@@ -1,11 +1,11 @@
 import useTabStateStore from '@/utils/TabStateStore';
 
-type TabButtonType = {
+type TabButtonProps = {
   text: string;
   target: string;
 };
 
-function TabButton({ text, target }: TabButtonType) {
+function TabButton({ text, target }: TabButtonProps) {
   const { tabState, setTabState } = useTabStateStore();
 
   const clickTab = (targetTab: string) => {
