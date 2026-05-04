@@ -114,6 +114,7 @@ function NewsList() {
           title={news.title}
           by={news.by}
           time={news.time}
+          id={news.id}
         />
       ))}
 
