@@ -1,4 +1,5 @@
 import Tab from '@/components/tab';
+import NewsList from './components/newsList';
 
 function App() {
   return (
@@ -7,6 +8,7 @@ function App() {
         <h1 className="font-bold text-4xl mb-4">AIPIA NEWS</h1>
         {/* 컨텐츠 영역 */}
         <Tab />
+        <NewsList />
       </main>
     </div>
   );
