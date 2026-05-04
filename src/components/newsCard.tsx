@@ -16,14 +16,22 @@ function NewsCard({ title, by, time, id }: NewsCardProps) {
     return `${yyyy}-${mm}-${dd}`;
   };
 
-  const getRandomId = () => {
-    return Math.floor(Math.random() * 500);
+  const getPhotoId = (id: number) => {
+    let str = '';
+
+    const idStr = String(id);
+
+    str += idStr.charAt(0);
+    str += idStr.charAt(3);
+    str += idStr.charAt(idStr.length - 1);
+
+    return str;
   };
 
   return (
     <div className="flex flex-row gap-4 items-center" key={id}>
       <img
-        src={`https://picsum.photos/id/${getRandomId()}/100`}
+        src={`https://picsum.photos/id/${getPhotoId(id)}/100/100`}
         className="w-20 rounded-md border aspect-square"
       />
       <div className="h-20 flex flex-col justify-between whitespace-nowrap overflow-hidden">
