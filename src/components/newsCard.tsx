@@ -1,4 +1,5 @@
 import formatDate from '@/utils/timeFormatter';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
 type NewsCardProps = {
@@ -19,10 +20,15 @@ function NewsCard({ title, by, time, id }: NewsCardProps) {
     )}`;
   };
 
+  const [imgSrc, setImgSrc] = useState(
+    `https://picsum.photos/id/${getPhotoId(id)}/100/100`,
+  );
+
   return (
     <div className="flex flex-row gap-4 items-center" key={id}>
       <img
-        src={`https://picsum.photos/id/${getPhotoId(id)}/100/100`}
+        src={imgSrc}
+        onError={() => setImgSrc('/base.png')}
         className="w-20 rounded-md border aspect-square"
       />
       <div className="h-20 flex flex-col justify-between whitespace-nowrap overflow-hidden">
