@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import NewsCard from './newsCard';
 import useTabStateStore from '@/utils/TabStateStore';
+import MainPageSkeleton from './mainPageSkeleton';
 
 type CurrentNewsList = {
   id: number;
@@ -125,11 +126,16 @@ function NewsList() {
         />
       ))}
 
-      <div ref={observerRef} className="h-10" />
-
       {isLoading && (
-        <p className="text-center text-sm text-gray-400">불러오는 중...</p>
+        <>
+          <MainPageSkeleton />
+          <MainPageSkeleton />
+          <MainPageSkeleton />
+          <MainPageSkeleton />
+        </>
       )}
+
+      <div ref={observerRef} className="h-10" />
     </div>
   );
 }
