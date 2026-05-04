@@ -57,7 +57,12 @@ function DetailPage() {
             <div>{formatDate(content!.time)}</div>
           </div>
           <div className="font-bold my-4">점수 : {content?.score}</div>
-          <a href={content?.url} className="underline">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={content?.url}
+            className="underline"
+          >
             자세히 보기
           </a>
         </>
