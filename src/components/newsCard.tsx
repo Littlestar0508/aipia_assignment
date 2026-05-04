@@ -1,3 +1,4 @@
+import formatDate from '@/utils/timeFormatter';
 import { useNavigate } from 'react-router';
 
 type NewsCardProps = {
@@ -9,16 +10,6 @@ type NewsCardProps = {
 
 function NewsCard({ title, by, time, id }: NewsCardProps) {
   const navigate = useNavigate();
-
-  const formatDate = (time: number) => {
-    const date = new Date(time * 1000);
-
-    const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const dd = String(date.getDate()).padStart(2, '0');
-
-    return `${yyyy}-${mm}-${dd}`;
-  };
 
   const getPhotoId = (id: number) => {
     const idStr = String(id);
