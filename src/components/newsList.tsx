@@ -76,7 +76,14 @@ function NewsList() {
           }),
         );
 
-        setCurrentNewsList((prev) => [...prev, ...newsItems]);
+        setCurrentNewsList((prev) => {
+          const merged = [...prev, ...newsItems];
+
+          return merged.filter(
+            (news, idx, self) =>
+              idx === self.findIndex((item) => item.id === news.id),
+          );
+        });
       } catch (error) {
         console.error('뉴스 상세 호출 실패:', error);
       } finally {
