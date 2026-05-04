@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router';
+
 type NewsCardProps = {
   title: string;
   by: string;
@@ -6,6 +8,8 @@ type NewsCardProps = {
 };
 
 function NewsCard({ title, by, time, id }: NewsCardProps) {
+  const navigate = useNavigate();
+
   const formatDate = (time: number) => {
     const date = new Date(time * 1000);
 
@@ -17,15 +21,11 @@ function NewsCard({ title, by, time, id }: NewsCardProps) {
   };
 
   const getPhotoId = (id: number) => {
-    let str = '';
-
     const idStr = String(id);
 
-    str += idStr.charAt(0);
-    str += idStr.charAt(3);
-    str += idStr.charAt(idStr.length - 1);
-
-    return str;
+    return `${idStr.charAt(0)}${idStr.charAt(3)}${idStr.charAt(
+      idStr.length - 1,
+    )}`;
   };
 
   return (
@@ -35,7 +35,9 @@ function NewsCard({ title, by, time, id }: NewsCardProps) {
         className="w-20 rounded-md border aspect-square"
       />
       <div className="h-20 flex flex-col justify-between whitespace-nowrap overflow-hidden">
-        <h2 className="font-bold text-xl">{title}</h2>
+        <button type="button" onClick={() => navigate(`/news/${id}`)}>
+          <h2 className="font-bold text-xl">{title}</h2>
+        </button>
         <div>
           <p className="text-gray-500 text-base">{by}</p>
           <p className="text-gray-500 text-base">{formatDate(time)}</p>
