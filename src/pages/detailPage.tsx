@@ -1,4 +1,5 @@
 import DetailPageSkeleton from '@/components/detailPageSkeleton';
+import MoveToMainPage from '@/components/moveToMainPage';
 import formatDate from '@/utils/timeFormatter';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
@@ -67,6 +68,7 @@ function DetailPage() {
           </a>
         </>
       )}
+      <MoveToMainPage />
     </>
   );
 }
